@@ -1,3 +1,4 @@
+/// you need to add appsettings.json file with these contents:
 {
   "Logging": {
     "LogLevel": {
