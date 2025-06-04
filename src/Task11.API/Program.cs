@@ -1,5 +1,3 @@
-namespace DefaultNamespace;
-
 using System.Text;
 using EmployeeManager.API;
 using EmployeeManager.Repository.context;
@@ -14,12 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//   configuration & JWT options
-var configuration = builder.Configuration;
-builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+// cononfiguration: JWT
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-//  databasa connection
-var connectionString = configuration.GetConnectionString("EmployeeDatabase");
+//  DbContext
+var connectionString = builder.Configuration.GetConnectionString("EmployeeDatabase");
 builder.Services.AddDbContext<EmployeeDatabaseContext>(options => options.UseSqlServer(connectionString));
 
 // ddependency Injection
@@ -30,16 +27,16 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
-//  swagger + Controllers
+// swagger + MVC
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-//  JWT Authentication
+//  JWT Auth
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
-        var jwtSection = configuration.GetSection("JwtSettings");
+        var jwtSection = builder.Configuration.GetSection("JwtSettings");
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -67,7 +64,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+app.MapControllers(); 
 
 
 using (var scope = app.Services.CreateScope())
