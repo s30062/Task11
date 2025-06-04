@@ -1,6 +1,3 @@
-# Task11
- launching your project, you need to add appsettings.json file with these contents:
-
 {
   "Logging": {
     "LogLevel": {
@@ -11,5 +8,11 @@
   "AllowedHosts": "*",
   "ConnectionStrings": {
     "EmployeeDatabase": "<your connection string>"
+  },
+  "Jwt":{
+    "Issuer": < person who provides tokens>,
+    "Audience": < person who is provided with tokens>,
+    "Key": <hashing key>,
+    "ValidInMinutes": <token's lifetime>
   }
 }
